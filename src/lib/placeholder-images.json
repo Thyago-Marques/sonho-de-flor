@@ -1,3 +1,58 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "banner-1",
+      "description": "Promotional banner showing a comfortable bedroom setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1758523668652-36657f256079?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwYWphbWFzJTIwYmVkcm9vbXxlbnwwfHx8fDE3NjM1Nzc1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pajamas bedroom"
+    },
+    {
+      "id": "banner-2",
+      "description": "Promotional banner with a focus on lavender flowers.",
+      "imageUrl": "https://images.unsplash.com/photo-1499002238440-d264edd596ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXZlbmRlciUyMGZpZWxkfGVufDB8fHx8MTc2MzU0NDE2MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lavender field"
+    },
+    {
+      "id": "banner-3",
+      "description": "Promotional banner showing a person relaxing in pajamas.",
+      "imageUrl": "https://images.unsplash.com/photo-1610289982320-3891f7c9fd6d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3b21hbiUyMHJlbGF4aW5nfGVufDB8fHx8MTc2MzU3NzU5OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman relaxing"
+    },
+    {
+      "id": "product-1",
+      "description": "A beautiful lavender-colored silk pajama set.",
+      "imageUrl": "https://images.unsplash.com/photo-1612975827899-14683dae1852?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzaWxrJTIwcGFqYW1hc3xlbnwwfHx8fDE3NjM1Nzc1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silk pajamas"
+    },
+    {
+      "id": "product-2",
+      "description": "A comfortable cotton pajama set for summer.",
+      "imageUrl": "https://images.unsplash.com/photo-1629304434116-ef497eb8a4d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3R0b24lMjBwYWphbWFzfGVufDB8fHx8MTc2MzU3NzU5OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cotton pajamas"
+    },
+    {
+      "id": "product-3",
+      "description": "A warm flannel pajama set for winter.",
+      "imageUrl": "https://images.unsplash.com/photo-1695509038649-e10cd23051cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmbGFubmVsJTIwcGFqYW1hc3xlbnwwfHx8fDE3NjM1Nzc1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flannel pajamas"
+    },
+    {
+      "id": "product-4",
+      "description": "An elegant pajama set with floral patterns.",
+      "imageUrl": "https://images.unsplash.com/photo-1752047763304-df3b84798b37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmbG9yYWwlMjBwYWphbWFzfGVufDB8fHx8MTc2MzU3NzYwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "floral pajamas"
+    },
+    {
+      "id": "product-5",
+      "description": "A cute pajama set for children.",
+      "imageUrl": "https://images.unsplash.com/photo-1517588487680-fc59cb1a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxraWRzJTIwcGFqYW1hc3xlbnwwfHx8fDE3NjM1Nzc1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "kids pajamas"
+    },
+    {
+      "id": "product-6",
+      "description": "A short pajama set for warm nights.",
+      "imageUrl": "https://images.unsplash.com/photo-1581892428149-4ff3be9cd63a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzaG9ydCUyMHBhamFtYXN8ZW58MHx8fHwxNzYzNTc3NTk5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "short pajamas"
+    }
+  ]
 }
