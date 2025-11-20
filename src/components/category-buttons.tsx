@@ -1,9 +1,21 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Sun, Snowflake, Baby } from 'lucide-react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu";
 
-const categories = [
-    { href: "/category/infantil", label: "🧸 Infantil", icon: <Baby className="mr-2 h-5 w-5" /> },
+const infantilAges = [2, 4, 6, 8, 10];
+
+const otherCategories = [
     { href: "/category/verao", label: "Pijamas de Verão", icon: <Sun className="mr-2 h-5 w-5" /> },
     { href: "/category/inverno", label: "Pijamas de Inverno", icon: <Snowflake className="mr-2 h-5 w-5" /> },
 ];
@@ -12,7 +24,37 @@ export function CategoryButtons() {
     return (
         <section className="container mx-auto px-4 py-8 sm:py-12">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {categories.map((category) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button size="lg" variant="outline" className="h-16 w-full text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
+                            <Baby className="mr-2 h-5 w-5" />
+                            🧸 Infantil
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                        <DropdownMenuGroup>
+                        {infantilAges.map((age) => (
+                            <DropdownMenuSub key={age}>
+                            <DropdownMenuSubTrigger>
+                                <span>{age} anos</span>
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                <DropdownMenuItem asChild>
+                                    <Link href={`/category/infantil/${age}/masculino`}>Masculino</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link href={`/category/infantil/${age}/feminino`}>Feminino</Link>
+                                </DropdownMenuItem>
+                                </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                        ))}
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {otherCategories.map((category) => (
                     <Button asChild key={category.label} size="lg" variant="outline" className="h-16 text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
                         <Link href={category.href}>
                             {category.icon}
