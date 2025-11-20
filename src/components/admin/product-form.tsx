@@ -38,6 +38,8 @@ import 'react-image-crop/dist/ReactCrop.css';
 import Image from 'next/image';
 import { uploadImageAndGetURL } from '@/firebase/storage';
 import { Loader2 } from 'lucide-react';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const productSchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
@@ -185,54 +187,68 @@ export function ProductForm() {
   }
 
   async function onSubmit(values: z.infer<typeof productSchema>) {
-    setIsSubmitting(true);
     if (!firestore) {
-      toast({
-        variant: 'destructive',
-        title: 'Erro de Conexão',
-        description: 'Não foi possível conectar ao banco de dados.',
-      });
-      setIsSubmitting(false);
-      return;
+        toast({
+            variant: "destructive",
+            title: "Erro de Conexão",
+            description: "Não foi possível conectar ao banco de dados.",
+        });
+        return;
     }
+
+    setIsSubmitting(true);
+    const productsCollection = collection(firestore, 'products');
 
     try {
-      const imageUrl = await uploadImageAndGetURL(values.image);
+        // Step 1: Upload image and get URL
+        const imageUrl = await uploadImageAndGetURL(values.image);
 
-      await addDoc(collection(firestore, 'products'), {
-        name: values.name,
-        description: values.description,
-        price: values.price,
-        stockQuantity: values.stockQuantity,
-        imageUrl: imageUrl,
-        categoryId: values.category,
-        subcategoryId: values.subCategory,
-        size: values.size,
-      });
+        // Step 2: Add product data to Firestore
+        await addDoc(productsCollection, {
+            name: values.name,
+            description: values.description,
+            price: values.price,
+            stockQuantity: values.stockQuantity,
+            imageUrl: imageUrl,
+            categoryId: values.category,
+            subcategoryId: values.subCategory,
+            size: values.size,
+        });
 
-      toast({
-        title: 'Produto Adicionado!',
-        description: `${values.name} foi adicionado com sucesso.`,
-      });
+        // Step 3: Success feedback
+        toast({
+            title: "Produto Adicionado!",
+            description: `${values.name} foi adicionado com sucesso.`,
+        });
 
-      form.reset();
-      setCroppedImageUrl('');
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+        // Step 4: Reset form
+        form.reset();
+        setCroppedImageUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+
     } catch (error: any) {
-      console.error('Erro ao adicionar produto:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erro ao Adicionar Produto',
-        description:
-          error.message ||
-          'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
-      });
+        // Step 5: Error handling
+        console.error("Erro detalhado ao adicionar produto:", error);
+
+        const permissionError = new FirestorePermissionError({
+            path: productsCollection.path,
+            operation: 'create',
+            requestResourceData: values,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+
+        toast({
+            variant: "destructive",
+            title: "Erro ao Adicionar Produto",
+            description: error.message || "Ocorreu um erro inesperado. Verifique as permissões do Firestore e tente novamente.",
+        });
     } finally {
-      setIsSubmitting(false);
+        // Step 6: ALWAYS turn off loading state
+        setIsSubmitting(false);
     }
-  }
+}
 
   return (
     <>
@@ -389,7 +405,7 @@ export function ProductForm() {
             <div className="space-y-2">
                 <p className="text-sm font-medium">Prévia da Imagem</p>
                 <div className="relative w-40 h-52 rounded-md overflow-hidden border">
-                    <Image src={croppedImageUrl} alt="Prévia da imagem recortada" layout="fill" objectFit="cover" />
+                    <Image src={croppedImageUrl} alt="Prévia da imagem recortada" fill objectFit="cover" />
                 </div>
             </div>
           )}
