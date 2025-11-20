@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Baby, Moon } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -70,7 +69,6 @@ export function CategoryButtons() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button size="lg" variant="outline" className="h-16 w-full text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
-                            <Baby className="mr-2 h-5 w-5" />
                             🧸 Infantil
                         </Button>
                     </DropdownMenuTrigger>
@@ -100,7 +98,6 @@ export function CategoryButtons() {
                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button size="lg" variant="outline" className="h-16 w-full text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
-                            <Moon className="mr-2 h-5 w-5" />
                             💤 Masculino
                         </Button>
                     </DropdownMenuTrigger>

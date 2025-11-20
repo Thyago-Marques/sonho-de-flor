@@ -9,8 +9,6 @@ import {
   Mail,
   Menu,
   ShoppingCart,
-  Moon,
-  Baby,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -146,7 +144,6 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost">
-                <Baby className="mr-2 h-5 w-5" />
                 🧸 Infantil
               </Button>
             </DropdownMenuTrigger>
@@ -175,7 +172,6 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost">
-                <Moon className="mr-2 h-5 w-5" />
                 💤 Masculino
               </Button>
             </DropdownMenuTrigger>
