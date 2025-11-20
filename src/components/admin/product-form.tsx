@@ -73,39 +73,41 @@ export function ProductForm() {
 
   const category = form.watch('category');
 
-  async function onSubmit(values: z.infer<typeof productSchema>) {
+  function onSubmit(values: z.infer<typeof productSchema>) {
+    if (!firestore) {
+        toast({
+            variant: "destructive",
+            title: "Erro de conexão",
+            description: "Não foi possível conectar ao banco de dados.",
+        });
+        return;
+    }
     // TODO: Implement image upload to Firebase Storage and get URL
     const imageUrl = 'https://picsum.photos/seed/placeholder/400/500';
-    console.log({
-        ...values,
-        imageUrl,
-    });
     
-    try {
-        const productsRef = collection(firestore, 'products');
-        await addDocumentNonBlocking(productsRef, {
-            name: values.name,
-            price: values.price,
-            stockQuantity: values.stockQuantity,
-            imageUrl: imageUrl,
-            categoryId: values.category,
-            subcategoryId: values.subCategory,
-            // You might want to store size/age differently, but this is a start
-            size: values.size, 
-        });
-
+    const productsRef = collection(firestore, 'products');
+    addDocumentNonBlocking(productsRef, {
+        name: values.name,
+        price: values.price,
+        stockQuantity: values.stockQuantity,
+        imageUrl: imageUrl,
+        categoryId: values.category,
+        subcategoryId: values.subCategory,
+        // You might want to store size/age differently, but this is a start
+        size: values.size, 
+    }).then(() => {
         toast({
             title: 'Produto Adicionado!',
             description: `${values.name} foi adicionado com sucesso.`,
         });
         form.reset();
-    } catch (error) {
-        toast({
+    }).catch(() => {
+         toast({
             variant: "destructive",
             title: "Erro ao adicionar produto",
-            description: "Ocorreu um erro ao salvar o produto no banco de dados.",
+            description: "Ocorreu um erro ao salvar o produto. Verifique suas permissões.",
         });
-    }
+    });
   }
 
   return (
