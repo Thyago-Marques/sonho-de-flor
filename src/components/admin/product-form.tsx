@@ -38,8 +38,6 @@ import 'react-image-crop/dist/ReactCrop.css';
 import Image from 'next/image';
 import { uploadImageAndGetURL } from '@/firebase/storage';
 import { Loader2 } from 'lucide-react';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
 
 const productSchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
@@ -188,67 +186,64 @@ export function ProductForm() {
 
   async function onSubmit(values: z.infer<typeof productSchema>) {
     if (!firestore) {
-        toast({
-            variant: "destructive",
-            title: "Erro de Conexão",
-            description: "Não foi possível conectar ao banco de dados.",
-        });
-        return;
+      toast({
+        variant: 'destructive',
+        title: 'Erro de Conexão',
+        description: 'Não foi possível conectar ao banco de dados. Tente novamente.',
+      });
+      return;
     }
 
     setIsSubmitting(true);
-    const productsCollection = collection(firestore, 'products');
 
     try {
-        // Step 1: Upload image and get URL
-        const imageUrl = await uploadImageAndGetURL(values.image);
+      // 1. Upload image and get URL
+      const imageUrl = await uploadImageAndGetURL(values.image);
 
-        // Step 2: Add product data to Firestore
-        await addDoc(productsCollection, {
-            name: values.name,
-            description: values.description,
-            price: values.price,
-            stockQuantity: values.stockQuantity,
-            imageUrl: imageUrl,
-            categoryId: values.category,
-            subcategoryId: values.subCategory,
-            size: values.size,
-        });
+      // 2. Prepare product data for Firestore
+      const productData = {
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        stockQuantity: values.stockQuantity,
+        imageUrl: imageUrl,
+        categoryId: values.category,
+        subcategoryId: values.subCategory,
+        size: values.size,
+      };
 
-        // Step 3: Success feedback
-        toast({
-            title: "Produto Adicionado!",
-            description: `${values.name} foi adicionado com sucesso.`,
-        });
+      // 3. Add product data to Firestore
+      const productsCollection = collection(firestore, 'products');
+      await addDoc(productsCollection, productData);
 
-        // Step 4: Reset form
-        form.reset();
-        setCroppedImageUrl('');
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
+      // 4. Success feedback
+      toast({
+        title: 'Produto Adicionado!',
+        description: `${values.name} foi adicionado com sucesso.`,
+      });
 
+      // 5. Reset form and UI state
+      form.reset();
+      setCroppedImageUrl('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error: any) {
-        // Step 5: Error handling
-        console.error("Erro detalhado ao adicionar produto:", error);
-
-        const permissionError = new FirestorePermissionError({
-            path: productsCollection.path,
-            operation: 'create',
-            requestResourceData: values,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-
-        toast({
-            variant: "destructive",
-            title: "Erro ao Adicionar Produto",
-            description: error.message || "Ocorreu um erro inesperado. Verifique as permissões do Firestore e tente novamente.",
-        });
+      // 6. Detailed error handling
+      console.error('Erro detalhado ao adicionar produto:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao Adicionar Produto',
+        description:
+          error.code === 'permission-denied'
+            ? 'Você não tem permissão para adicionar produtos. Verifique suas credenciais de administrador.'
+            : error.message || 'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
+      });
     } finally {
-        // Step 6: ALWAYS turn off loading state
-        setIsSubmitting(false);
+      // 7. ALWAYS turn off loading state
+      setIsSubmitting(false);
     }
-}
+  }
 
   return (
     <>
