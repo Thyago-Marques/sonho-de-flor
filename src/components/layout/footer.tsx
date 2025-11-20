@@ -28,6 +28,7 @@ export function Footer() {
             <nav className="flex flex-col space-y-2">
               <Link href="/category/verao" className="transition-colors hover:text-primary">Pijamas de Verão</Link>
               <Link href="/category/inverno" className="transition-colors hover:text-primary">Pijamas de Inverno</Link>
+              <Link href="/category/feminino" className="transition-colors hover:text-primary">Feminino</Link>
               <Link href="/category/infantil" className="transition-colors hover:text-primary">Infantil</Link>
             </nav>
           </div>

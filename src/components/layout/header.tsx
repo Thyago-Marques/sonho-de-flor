@@ -61,6 +61,18 @@ const navLinks = [
 
 const infantilAges = [2, 4, 6, 8, 10];
 
+const femininoSubCategories = [
+    { name: 'Blogueirinha Cropped', href: 'blogueirinha-cropped' },
+    { name: 'Blogueirinha Blusa Maior', href: 'blogueirinha-blusa-maior' },
+    { name: 'Rendinha', href: 'rendinha' },
+    { name: 'Camisolas', href: 'camisolas' },
+    { name: 'Senhora Elegante', href: 'senhora-elegante' },
+];
+const femininoSizes = [
+    { name: 'Tamanho Único', href: 'tamanho-unico' },
+    { name: 'GG', href: 'gg' },
+];
+
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -96,6 +108,33 @@ export function Header() {
                 </Link>
              </Button>
           ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                🌸 Feminino
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+                <DropdownMenuGroup>
+                    {femininoSizes.map((size) => (
+                    <DropdownMenuSub key={size.name}>
+                        <DropdownMenuSubTrigger>
+                        <span>{size.name}</span>
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                            {femininoSubCategories.map((style) => (
+                                <DropdownMenuItem key={style.name} asChild>
+                                    <Link href={`/category/feminino/${size.href}/${style.href}`}>{style.name}</Link>
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                    ))}
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost">
@@ -148,6 +187,9 @@ export function Header() {
                         {link.label}
                     </Link>
                 ))}
+                <Link href="/category/feminino" className="transition-colors hover:text-primary">
+                    🌸 Feminino
+                </Link>
                  <Link href="/category/infantil" className="transition-colors hover:text-primary">
                     🧸 Infantil
                 </Link>
