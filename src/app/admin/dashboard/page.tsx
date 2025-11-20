@@ -1,17 +1,19 @@
 
 'use client';
 
+import { AuthGuard } from '@/components/admin/auth-guard';
 import { ProductForm } from '@/components/admin/product-form';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
-export default function AdminDashboardPage() {
+function AdminDashboardContent() {
     const auth = useAuth();
     const router = useRouter();
 
     const handleSignOut = async () => {
+        if (!auth) return;
         await signOut(auth);
         router.push('/admin/login');
     }
@@ -35,4 +37,13 @@ export default function AdminDashboardPage() {
         </div>
     </div>
   );
+}
+
+
+export default function AdminDashboardPage() {
+    return (
+        <AuthGuard>
+            <AdminDashboardContent />
+        </AuthGuard>
+    )
 }
