@@ -1,7 +1,8 @@
 export type Product = {
   id: string;
   name: string;
-  price: number; // Changed to number to match schema
+  description: string;
+  price: number;
   imageUrl: string;
   stockQuantity: number;
   categoryId: string;

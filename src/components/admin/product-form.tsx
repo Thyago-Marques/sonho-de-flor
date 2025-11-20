@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -15,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -29,6 +29,7 @@ import { collection } from 'firebase/firestore';
 
 const productSchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
+  description: z.string().min(10, { message: 'A descrição deve ter pelo menos 10 caracteres.'}),
   price: z.preprocess(
     (val) => Number(String(val).replace(/[^0-9,]/g, '').replace(',', '.')),
     z.number().positive({ message: 'O preço deve ser um número positivo.' })
@@ -66,6 +67,7 @@ export function ProductForm() {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
+      description: '',
       price: 0,
       stockQuantity: 0,
     },
@@ -88,12 +90,12 @@ export function ProductForm() {
     const productsRef = collection(firestore, 'products');
     addDocumentNonBlocking(productsRef, {
         name: values.name,
+        description: values.description,
         price: values.price,
         stockQuantity: values.stockQuantity,
         imageUrl: imageUrl,
         categoryId: values.category,
         subcategoryId: values.subCategory,
-        // You might want to store size/age differently, but this is a start
         size: values.size, 
     }).then(() => {
         toast({
@@ -121,6 +123,19 @@ export function ProductForm() {
               <FormLabel>Nome do Produto</FormLabel>
               <FormControl>
                 <Input placeholder="Pijama de Seda Lavanda" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrição do Produto</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Descreva o produto, material, caimento, etc." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

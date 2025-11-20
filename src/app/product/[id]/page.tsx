@@ -89,8 +89,7 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-lg font-semibold">Tamanho: {product.size.toUpperCase()}</h3>
-             {/* TODO: Add size selector if multiple sizes are available for a product */}
+             <h3 className="text-lg font-semibold">Tamanho: {product.size.toUpperCase()}</h3>
           </div>
 
            <div className="mt-2">
@@ -109,8 +108,7 @@ export default function ProductDetailPage() {
            <div className="mt-8">
             <h3 className="font-semibold text-primary/90">Descrição</h3>
             <p className="mt-2 text-muted-foreground">
-                {/* TODO: Add description field to product form and display it here */}
-                Descrição do produto em breve. Conforto e estilo para suas noites.
+                {product.description || 'Descrição do produto em breve. Conforto e estilo para suas noites.'}
             </p>
            </div>
         </div>
