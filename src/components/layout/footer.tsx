@@ -30,6 +30,7 @@ export function Footer() {
               <Link href="/category/inverno" className="transition-colors hover:text-primary">Pijamas de Inverno</Link>
               <Link href="/category/feminino" className="transition-colors hover:text-primary">Feminino</Link>
               <Link href="/category/infantil" className="transition-colors hover:text-primary">Infantil</Link>
+              <Link href="/category/masculino" className="transition-colors hover:text-primary">Masculino</Link>
             </nav>
           </div>
           <div className="text-center md:text-right">

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Sun, Snowflake, Baby } from 'lucide-react';
+import { Sun, Snowflake, Baby, Moon } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,9 +25,18 @@ const femininoSizes = [
     { name: 'Tamanho Único', href: 'tamanho-unico' },
     { name: 'GG', href: 'gg' },
 ];
+
+const masculinoSubCategories = [
+    { name: 'Samba Canção', href: 'samba-cancao' },
+    { name: 'Benjamin', href: 'benjamin' },
+];
+const masculinoSizes = [
+    { name: 'Tamanho Único', href: 'tamanho-unico' },
+    { name: 'GG', href: 'gg' },
+];
+
 const otherCategories = [
     { href: "/category/verao", label: "Pijamas de Verão", icon: <Sun className="mr-2 h-5 w-5" /> },
-    { href: "/category/inverno", label: "Pijamas de Inverno", icon: <Snowflake className="mr-2 h-5 w-5" /> },
 ];
 
 export function CategoryButtons() {
@@ -88,6 +97,35 @@ export function CategoryButtons() {
                             </DropdownMenuPortal>
                             </DropdownMenuSub>
                         ))}
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button size="lg" variant="outline" className="h-16 w-full text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
+                            <Moon className="mr-2 h-5 w-5" />
+                            💤 Masculino
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                        <DropdownMenuGroup>
+                            {masculinoSubCategories.map((subCategory) => (
+                                <DropdownMenuSub key={subCategory.name}>
+                                    <DropdownMenuSubTrigger>
+                                        <span>{subCategory.name}</span>
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            {masculinoSizes.map((size) => (
+                                                <DropdownMenuItem key={size.name} asChild>
+                                                    <Link href={`/category/masculino/${subCategory.href}/${size.href}`}>{size.name}</Link>
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            ))}
                         </DropdownMenuGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>

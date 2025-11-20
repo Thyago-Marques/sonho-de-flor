@@ -9,7 +9,7 @@ import {
   Mail,
   Menu,
   ShoppingCart,
-  Baby,
+  Moon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -72,6 +72,16 @@ const femininoSizes = [
     { name: 'Tamanho Único', href: 'tamanho-unico' },
     { name: 'GG', href: 'gg' },
 ];
+
+const masculinoSubCategories = [
+    { name: 'Samba Canção', href: 'samba-cancao' },
+    { name: 'Benjamin', href: 'benjamin' },
+];
+const masculinoSizes = [
+    { name: 'Tamanho Único', href: 'tamanho-unico' },
+    { name: 'GG', href: 'gg' },
+];
+
 
 export function Header() {
   return (
@@ -163,6 +173,34 @@ export function Header() {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <Moon className="mr-2 h-5 w-5" />
+                💤 Masculino
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+                <DropdownMenuGroup>
+                    {masculinoSubCategories.map((subCategory) => (
+                        <DropdownMenuSub key={subCategory.name}>
+                            <DropdownMenuSubTrigger>
+                                <span>{subCategory.name}</span>
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                    {masculinoSizes.map((size) => (
+                                        <DropdownMenuItem key={size.name} asChild>
+                                            <Link href={`/category/masculino/${subCategory.href}/${size.href}`}>{size.name}</Link>
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                        </DropdownMenuSub>
+                    ))}
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex flex-1 items-center justify-end space-x-4">
@@ -192,6 +230,9 @@ export function Header() {
                 </Link>
                  <Link href="/category/infantil" className="transition-colors hover:text-primary">
                     🧸 Infantil
+                </Link>
+                <Link href="/category/masculino" className="transition-colors hover:text-primary">
+                    💤 Masculino
                 </Link>
               </nav>
             </SheetContent>
