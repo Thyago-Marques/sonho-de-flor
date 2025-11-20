@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Sun, Snowflake, Baby } from 'lucide-react';
 
 const categories = [
+    { href: "/category/infantil", label: "🧸 Infantil", icon: <Baby className="mr-2 h-5 w-5" /> },
     { href: "/category/verao", label: "Pijamas de Verão", icon: <Sun className="mr-2 h-5 w-5" /> },
     { href: "/category/inverno", label: "Pijamas de Inverno", icon: <Snowflake className="mr-2 h-5 w-5" /> },
-    { href: "/category/infantil", label: "Infantil", icon: <Baby className="mr-2 h-5 w-5" /> },
 ];
 
 export function CategoryButtons() {
