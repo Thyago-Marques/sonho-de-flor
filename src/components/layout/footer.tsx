@@ -26,8 +26,6 @@ export function Footer() {
           <div className="text-center">
             <h3 className="mb-4 font-headline font-semibold uppercase tracking-wider text-primary">Navegação</h3>
             <nav className="flex flex-col space-y-2">
-              <Link href="/category/verao" className="transition-colors hover:text-primary">Pijamas de Verão</Link>
-              <Link href="/category/inverno" className="transition-colors hover:text-primary">Pijamas de Inverno</Link>
               <Link href="/category/feminino" className="transition-colors hover:text-primary">Feminino</Link>
               <Link href="/category/infantil" className="transition-colors hover:text-primary">Infantil</Link>
               <Link href="/category/masculino" className="transition-colors hover:text-primary">Masculino</Link>

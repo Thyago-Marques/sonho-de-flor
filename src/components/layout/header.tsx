@@ -10,6 +10,7 @@ import {
   Menu,
   ShoppingCart,
   Moon,
+  Baby,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -54,10 +55,7 @@ const socialLinks = [
   },
 ];
 
-const navLinks = [
-    { href: "/category/verao", label: "Pijamas de Verão" },
-    { href: "/category/inverno", label: "Pijamas de Inverno" },
-];
+const navLinks: { href: string, label: string }[] = [];
 
 const infantilAges = [2, 4, 6, 8, 10];
 
@@ -148,6 +146,7 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost">
+                <Baby className="mr-2 h-5 w-5" />
                 🧸 Infantil
               </Button>
             </DropdownMenuTrigger>

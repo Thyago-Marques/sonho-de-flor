@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Sun, Snowflake, Baby, Moon } from 'lucide-react';
+import { Baby, Moon } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -35,14 +35,10 @@ const masculinoSizes = [
     { name: 'GG', href: 'gg' },
 ];
 
-const otherCategories = [
-    { href: "/category/verao", label: "Pijamas de Verão", icon: <Sun className="mr-2 h-5 w-5" /> },
-];
-
 export function CategoryButtons() {
     return (
         <section className="container mx-auto px-4 py-8 sm:py-12">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button size="lg" variant="outline" className="h-16 w-full text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
@@ -129,15 +125,6 @@ export function CategoryButtons() {
                         </DropdownMenuGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
-
-                {otherCategories.map((category) => (
-                    <Button asChild key={category.label} size="lg" variant="outline" className="h-16 text-lg transition-transform hover:scale-105 hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary">
-                        <Link href={category.href}>
-                            {category.icon}
-                            {category.label}
-                        </Link>
-                    </Button>
-                ))}
             </div>
         </section>
     )
