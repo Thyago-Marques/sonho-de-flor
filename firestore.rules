@@ -1,0 +1,140 @@
+/**
+ * Core Philosophy: This ruleset implements a strict Role-Based Access Control (RBAC) model centered around a single "Administrator" role. All data-mutating operations (create, update, delete) and data-reading operations (get, list) on core business collections are restricted exclusively to authenticated users who have been designated as administrators.
+ *
+ * Data Structure: The database is organized into several flat, top-level collections:
+ * - /products: Contains all product information.
+ * - /categories: Contains product categories.
+ * - /subcategories: Contains product subcategories.
+ * - /promotion_banners: Manages promotional content.
+ * - /contact_info: Stores public business contact details.
+ * - /roles_admin: A special collection where the existence of a document signifies a user's admin privileges. This collection is the single source of truth for authorization.
+ *
+ * Key Security Decisions:
+ * - Admin-Only Access: All primary data collections are only accessible by administrators. There is no public read access by default, providing a highly secure posture. Public access can be enabled by changing the read rules from `isAdmin()` to `true` for specific collections.
+ * - Centralized Role Management: The `/roles_admin` collection is used to grant admin rights. A user is an admin if a document with their UID exists in this collection. To prevent privilege escalation, this collection cannot be written to by any client; roles must be managed directly in the Firebase Console.
+ * - No Data Shape Validation: In alignment with a prototyping philosophy, these rules focus strictly on authorization (who can access what) and do not validate the schema or data types of documents being written. This allows for rapid development and iteration of the data model.
+ *
+ * Denormalization for Authorization: The use of the `/roles_admin/{userId}` collection is a prime example of denormalization for security. Instead of checking a role field on a user profile, we use a fast `exists()` check. This avoids slow and costly `get()` calls in every rule and makes the security logic efficient and easy to reason about.
+ *
+ * Structural Segregation: The use of distinct top-level collections for each data type (products, categories, etc.) provides clear separation of concerns and allows for granular security policies, even though the current model applies the same admin-only policy to all.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------------
+    // Helper Functions
+    // ------------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the authenticated user is an administrator.
+     * Admin status is granted by the existence of a document in the /roles_admin
+     * collection with the user's UID as the document ID. This collection
+     * must be managed manually in the Firebase Console.
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    // ------------------------------------------------------------------------
+    // Collection Rules
+    // ------------------------------------------------------------------------
+
+    /**
+     * @description Manages access to product documents. Only admins can view and manage products.
+     * @path /products/{productId}
+     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on products.
+     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
+     * @principle Enforces a strict admin-only access model for core business data.
+     */
+    match /products/{productId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Manages access to category documents. Only admins can view and manage categories.
+     * @path /categories/{categoryId}
+     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on categories.
+     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
+     * @principle Enforces a strict admin-only access model for core business data.
+     */
+    match /categories/{categoryId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Manages access to subcategory documents. Only admins can view and manage subcategories.
+     * @path /subcategories/{subcategoryId}
+     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on subcategories.
+     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
+     * @principle Enforces a strict admin-only access model for core business data.
+     */
+    match /subcategories/{subcategoryId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Manages access to promotion banners. Only admins can view and manage banners.
+     * @path /promotion_banners/{bannerId}
+     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on banners.
+     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
+     * @principle Enforces a strict admin-only access model for site content.
+     */
+    match /promotion_banners/{bannerId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Manages access to store contact information. Only admins can view and manage contact info.
+     * @path /contact_info/{contactInfoId}
+     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on contact information.
+     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
+     * @principle Enforces a strict admin-only access model for business configuration.
+     */
+    match /contact_info/{contactInfoId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Secures the collection that defines admin roles.
+     * @path /roles_admin/{adminId}
+     * @allow (get) An admin can read their own role document, but cannot list the collection.
+     * @deny (list, create, update, delete) All write operations are forbidden to prevent privilege escalation from the client. Admins must be created via the Firebase Console. Listing is forbidden to prevent enumeration of administrators.
+     * @principle Prevents client-side privilege escalation and admin user enumeration.
+     */
+    match /roles_admin/{adminId} {
+      allow get: if isAdmin() && request.auth.uid == adminId;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

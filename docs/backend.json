@@ -1,0 +1,314 @@
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a pajama product in the store.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the product."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the product image.",
+          "format": "uri"
+        },
+        "stockQuantity": {
+          "type": "number",
+          "description": "Number of units currently in stock."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Reference to Category. (Relationship: Category 1:N Product)"
+        },
+        "subcategoryId": {
+          "type": "string",
+          "description": "Reference to Subcategory. (Relationship: Subcategory 1:N Product)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "price",
+        "imageUrl",
+        "stockQuantity",
+        "categoryId",
+        "subcategoryId"
+      ]
+    },
+    "Category": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Category",
+      "type": "object",
+      "description": "Represents a product category (e.g., 'Floral Pajamas', 'Silk Pajamas').",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the category."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the category."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the category."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "Subcategory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subcategory",
+      "type": "object",
+      "description": "Represents a subcategory within a category (e.g., 'Long Sleeve', 'Short Sleeve').",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the subcategory."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the subcategory."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the subcategory."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Reference to Category. (Relationship: Category 1:N Subcategory)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "categoryId"
+      ]
+    },
+    "PromotionBanner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PromotionBanner",
+      "type": "object",
+      "description": "Represents a promotion banner displayed on the website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the promotion banner."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the banner image.",
+          "format": "uri"
+        },
+        "linkUrl": {
+          "type": "string",
+          "description": "URL that the banner links to.",
+          "format": "uri"
+        },
+        "startDate": {
+          "type": "string",
+          "description": "Date and time when the banner should start being displayed.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "Date and time when the banner should stop being displayed.",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the banner."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the banner."
+        }
+      },
+      "required": [
+        "id",
+        "imageUrl",
+        "linkUrl",
+        "startDate",
+        "endDate",
+        "title",
+        "description"
+      ]
+    },
+    "ContactInfo": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactInfo",
+      "type": "object",
+      "description": "Represents the contact information for the store.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contact information."
+        },
+        "storeName": {
+          "type": "string",
+          "description": "Name of the store."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Contact email address.",
+          "format": "email"
+        },
+        "whatsappNumber": {
+          "type": "string",
+          "description": "WhatsApp number."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number."
+        },
+        "facebookLink": {
+          "type": "string",
+          "description": "Facebook page link.",
+          "format": "uri"
+        },
+        "instagramLink": {
+          "type": "string",
+          "description": "Instagram page link.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "storeName",
+        "contactEmail",
+        "whatsappNumber",
+        "phoneNumber",
+        "facebookLink",
+        "instagramLink"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product information. Accessible only to admins.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "Unique identifier for the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/categories/{categoryId}",
+        "definition": {
+          "entityName": "Category",
+          "schema": {
+            "$ref": "#/backend/entities/Category"
+          },
+          "description": "Stores product categories. Accessible only to admins.",
+          "params": [
+            {
+              "name": "categoryId",
+              "description": "Unique identifier for the category."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/subcategories/{subcategoryId}",
+        "definition": {
+          "entityName": "Subcategory",
+          "schema": {
+            "$ref": "#/backend/entities/Subcategory"
+          },
+          "description": "Stores product subcategories. Accessible only to admins.",
+          "params": [
+            {
+              "name": "subcategoryId",
+              "description": "Unique identifier for the subcategory."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/promotion_banners/{bannerId}",
+        "definition": {
+          "entityName": "PromotionBanner",
+          "schema": {
+            "$ref": "#/backend/entities/PromotionBanner"
+          },
+          "description": "Stores promotion banner information. Accessible only to admins.",
+          "params": [
+            {
+              "name": "bannerId",
+              "description": "Unique identifier for the promotion banner."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/contact_info/{contactInfoId}",
+        "definition": {
+          "entityName": "ContactInfo",
+          "schema": {
+            "$ref": "#/backend/entities/ContactInfo"
+          },
+          "description": "Stores contact information for the store. Accessible only to admins.",
+          "params": [
+            {
+              "name": "contactInfoId",
+              "description": "Unique identifier for the contact information."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{adminId}",
+        "definition": {
+          "entityName": "roles_admin",
+          "schema": {
+            "$ref": "#/backend/entities/ContactInfo"
+          },
+          "description": "Collection to store admin roles, existence determines access. Accessible only to admins.",
+          "params": [
+            {
+              "name": "adminId",
+              "description": "Unique identifier for the admin user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This Firestore structure prioritizes ease of management for an e-commerce pajama store ('Sonho de Flor') with administrative access for managing products, categories, subcategories, promotion banners and contact information. The structure is designed to be secure, scalable, and debuggable.  Administrative access is managed via email and the Firebase console, and the structure facilitates operations like restocking, product removal, image management, and the addition of products with associated categories and subcategories.\n\n**Authorization Independence (CRITICAL):** All reads and writes from the front end will not require a `get()` to confirm the user is an Admin. Admin is determined by checking the existence of a document with the `request.auth.uid` in the `/roles_admin/{uid}` collection, this ensures that authorization is independent and rules are atomic.\n\n**Segregation (Homogeneous Security Posture):** Segregating the data into collections based on the type of data and its access needs.  Products are stored in `/products`, categories in `/categories`, subcategories in `/subcategories`, promotional banners in `/promotion_banners`, and contact information in `/contact_info`.  This allows for specific rules for each data type. Admin roles are stored in `/roles_admin`.\n\n**Access Modeling (Standardization and Consistency):** The admin role is managed through the `roles_admin` collection, using existence over content.  The application uses standard naming conventions for fields and wildcards, making the structure predictable and understandable.\n\n**QAPs (Rules are not Filters):** List operations are secured by ensuring that only users with admin roles can access the product, category, subcategory, banner and contact info collections. The `roles_admin` collection makes this feasible because it facilitates validating existence without requiring filtering or complex data access patterns."
+  }
+}
