@@ -201,8 +201,7 @@ export function ProductForm() {
       const imageUrl = await uploadImageAndGetURL(values.image);
 
       // 2. Add product data to Firestore
-      const productsRef = collection(firestore, 'products');
-      await addDoc(productsRef, {
+      await addDoc(collection(firestore, 'products'), {
         name: values.name,
         description: values.description,
         price: values.price,
