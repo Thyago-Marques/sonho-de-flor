@@ -31,9 +31,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { addDocumentNonBlocking } from '@/firebase';
 import { useFirestore } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Image from 'next/image';
@@ -197,30 +196,40 @@ export function ProductForm() {
         return;
     }
 
-    const imageUrl = await uploadImageAndGetURL(values.image);
-    const productsRef = collection(firestore, 'products');
+    try {
+        const imageUrl = await uploadImageAndGetURL(values.image);
+        const productsRef = collection(firestore, 'products');
 
-    addDocumentNonBlocking(productsRef, {
-        name: values.name,
-        description: values.description,
-        price: values.price,
-        stockQuantity: values.stockQuantity,
-        imageUrl: imageUrl, 
-        categoryId: values.category,
-        subcategoryId: values.subCategory,
-        size: values.size, 
-    });
+        await addDoc(productsRef, {
+            name: values.name,
+            description: values.description,
+            price: values.price,
+            stockQuantity: values.stockQuantity,
+            imageUrl: imageUrl, 
+            categoryId: values.category,
+            subcategoryId: values.subCategory,
+            size: values.size, 
+        });
 
-    toast({
-        title: 'Produto Adicionado!',
-        description: `${values.name} foi adicionado com sucesso.`,
-    });
-    form.reset();
-    setCroppedImageUrl('');
-    if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        toast({
+            title: 'Produto Adicionado!',
+            description: `${values.name} foi adicionado com sucesso.`,
+        });
+        form.reset();
+        setCroppedImageUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    } catch (error) {
+        console.error("Erro ao adicionar produto:", error);
+        toast({
+            variant: "destructive",
+            title: "Erro ao adicionar produto",
+            description: "Ocorreu um erro ao salvar o produto. Verifique o console para mais detalhes.",
+        });
+    } finally {
+        setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   }
 
   return (
