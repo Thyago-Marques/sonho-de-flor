@@ -353,7 +353,7 @@ export function ProductForm() {
                           <FormControl>
                           <SelectTrigger>
                               <SelectValue placeholder="Selecione a subcategoria" />
-                          </SelectTrigger>
+                          </Trigger>
                           </FormControl>
                           <SelectContent>
                           {categories[category as keyof typeof categories].subCategories.map(sub => (
