@@ -1,5 +1,5 @@
 /**
- * Core Philosophy: This ruleset implements a strict Role-Based Access Control (RBAC) model centered around a single "Administrator" role. All data-mutating operations (create, update, delete) and data-reading operations (get, list) on core business collections are restricted exclusively to authenticated users who have been designated as administrators.
+ * Core Philosophy: This ruleset implements a strict Role-Based Access Control (RBAC) model centered around a single "Administrator" role. All data-mutating operations (create, update, delete) on core business collections are restricted exclusively to authenticated users who have been designated as administrators. Public read access is granted to most collections to allow customers to browse the store.
  *
  * Data Structure: The database is organized into several flat, top-level collections:
  * - /products: Contains all product information.
@@ -10,13 +10,13 @@
  * - /roles_admin: A special collection where the existence of a document signifies a user's admin privileges. This collection is the single source of truth for authorization.
  *
  * Key Security Decisions:
- * - Admin-Only Access: All primary data collections are only accessible by administrators. There is no public read access by default, providing a highly secure posture. Public access can be enabled by changing the read rules from `isAdmin()` to `true` for specific collections.
+ * - Public Read, Admin Write: Most data collections are publicly readable to allow customers to view products and content, but writable only by administrators. This provides a secure posture for an e-commerce site.
  * - Centralized Role Management: The `/roles_admin` collection is used to grant admin rights. A user is an admin if a document with their UID exists in this collection. To prevent privilege escalation, this collection cannot be written to by any client; roles must be managed directly in the Firebase Console.
  * - No Data Shape Validation: In alignment with a prototyping philosophy, these rules focus strictly on authorization (who can access what) and do not validate the schema or data types of documents being written. This allows for rapid development and iteration of the data model.
  *
  * Denormalization for Authorization: The use of the `/roles_admin/{userId}` collection is a prime example of denormalization for security. Instead of checking a role field on a user profile, we use a fast `exists()` check. This avoids slow and costly `get()` calls in every rule and makes the security logic efficient and easy to reason about.
  *
- * Structural Segregation: The use of distinct top-level collections for each data type (products, categories, etc.) provides clear separation of concerns and allows for granular security policies, even though the current model applies the same admin-only policy to all.
+ * Structural Segregation: The use of distinct top-level collections for each data type (products, categories, etc.) provides clear separation of concerns and allows for granular security policies.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -48,75 +48,70 @@ service cloud.firestore {
     // ------------------------------------------------------------------------
 
     /**
-     * @description Manages access to product documents. Only admins can view and manage products.
+     * @description Manages access to product documents. Public can read, only admins can manage.
      * @path /products/{productId}
-     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on products.
-     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
-     * @principle Enforces a strict admin-only access model for core business data.
+     * @allow (get, list) Anyone can view products.
+     * @allow (create, update, delete) Only authenticated admin users can manage products.
      */
     match /products/{productId} {
-      allow get: if isAdmin();
-      allow list: if isAdmin();
+      allow get: if true;
+      allow list: if true;
       allow create: if isAdmin();
       allow update: if isAdmin() && resource != null;
       allow delete: if isAdmin() && resource != null;
     }
 
     /**
-     * @description Manages access to category documents. Only admins can view and manage categories.
+     * @description Manages access to category documents. Public can read, only admins can manage.
      * @path /categories/{categoryId}
-     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on categories.
-     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
-     * @principle Enforces a strict admin-only access model for core business data.
+     * @allow (get, list) Anyone can view categories.
+     * @allow (create, update, delete) Only authenticated admin users can manage categories.
      */
     match /categories/{categoryId} {
-      allow get: if isAdmin();
-      allow list: if isAdmin();
+      allow get: if true;
+      allow list: if true;
       allow create: if isAdmin();
       allow update: if isAdmin() && resource != null;
       allow delete: if isAdmin() && resource != null;
     }
 
     /**
-     * @description Manages access to subcategory documents. Only admins can view and manage subcategories.
+     * @description Manages access to subcategory documents. Public can read, only admins can manage.
      * @path /subcategories/{subcategoryId}
-     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on subcategories.
-     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
-     * @principle Enforces a strict admin-only access model for core business data.
+     * @allow (get, list) Anyone can view subcategories.
+     * @allow (create, update, delete) Only authenticated admin users can manage subcategories.
      */
     match /subcategories/{subcategoryId} {
-      allow get: if isAdmin();
-      allow list: if isAdmin();
+      allow get: if true;
+      allow list: if true;
       allow create: if isAdmin();
       allow update: if isAdmin() && resource != null;
       allow delete: if isAdmin() && resource != null;
     }
 
     /**
-     * @description Manages access to promotion banners. Only admins can view and manage banners.
+     * @description Manages access to promotion banners. Public can read, only admins can manage.
      * @path /promotion_banners/{bannerId}
-     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on banners.
-     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
-     * @principle Enforces a strict admin-only access model for site content.
+     * @allow (get, list) Anyone can view banners.
+     * @allow (create, update, delete) Only authenticated admin users can manage banners.
      */
     match /promotion_banners/{bannerId} {
-      allow get: if isAdmin();
-      allow list: if isAdmin();
+      allow get: if true;
+      allow list: if true;
       allow create: if isAdmin();
       allow update: if isAdmin() && resource != null;
       allow delete: if isAdmin() && resource != null;
     }
 
     /**
-     * @description Manages access to store contact information. Only admins can view and manage contact info.
+     * @description Manages access to store contact information. Public can read, only admins can manage.
      * @path /contact_info/{contactInfoId}
-     * @allow (get, list, create, update, delete) An authenticated admin user can perform any operation on contact information.
-     * @deny (get, list, create, update, delete) Any non-admin or anonymous user is denied all access.
-     * @principle Enforces a strict admin-only access model for business configuration.
+     * @allow (get, list) Anyone can view contact information.
+     * @allow (create, update, delete) Only authenticated admin users can manage contact info.
      */
     match /contact_info/{contactInfoId} {
-      allow get: if isAdmin();
-      allow list: if isAdmin();
+      allow get: if true;
+      allow list: if true;
       allow create: if isAdmin();
       allow update: if isAdmin() && resource != null;
       allow delete: if isAdmin() && resource != null;
