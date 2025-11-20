@@ -194,7 +194,10 @@ export function ProductForm() {
     setIsSubmitting(true);
 
     try {
+      // 1. Upload image and get URL
       const imageUrl = await uploadImageAndGetURL(values.image);
+      
+      // 2. Prepare product data
       const productData = {
         name: values.name,
         price: values.price,
@@ -205,19 +208,24 @@ export function ProductForm() {
         size: values.size,
       };
 
+      // 3. Add product to Firestore
       await addDoc(collection(firestore, 'products'), productData);
 
+      // 4. Success feedback
       toast({
         title: 'Produto Adicionado!',
         description: `${values.name} foi adicionado com sucesso.`,
       });
 
+      // 5. Reset form
       form.reset();
       setCroppedImageUrl('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+
     } catch (error: any) {
+      // 6. Error handling
       console.error('Erro detalhado ao adicionar produto:', error);
       toast({
         variant: 'destructive',
@@ -228,6 +236,7 @@ export function ProductForm() {
             : error.message || 'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
       });
     } finally {
+      // 7. Always stop submitting state
       setIsSubmitting(false);
     }
   }
@@ -338,7 +347,7 @@ export function ProductForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione a subcategoria" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {categories[category as keyof typeof categories].subCategories.map(sub => (
