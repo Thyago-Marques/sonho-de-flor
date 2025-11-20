@@ -14,10 +14,6 @@
           "type": "string",
           "description": "Name of the product."
         },
-        "description": {
-          "type": "string",
-          "description": "Detailed description of the product."
-        },
         "price": {
           "type": "number",
           "description": "Price of the product."
@@ -43,7 +39,6 @@
       "required": [
         "id",
         "name",
-        "description",
         "price",
         "imageUrl",
         "stockQuantity",

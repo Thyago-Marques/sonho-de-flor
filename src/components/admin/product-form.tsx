@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -41,7 +40,6 @@ import { Loader2 } from 'lucide-react';
 
 const productSchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
-  description: z.string().min(10, { message: 'A descrição deve ter pelo menos 10 caracteres.'}),
   price: z.preprocess(
     (val) => Number(String(val).replace(/[^0-9,]/g, '').replace(',', '.')),
     z.number().positive({ message: 'O preço deve ser um número positivo.' })
@@ -135,7 +133,6 @@ export function ProductForm() {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
-      description: '',
       price: 0,
       stockQuantity: 0,
     },
@@ -197,13 +194,9 @@ export function ProductForm() {
     setIsSubmitting(true);
 
     try {
-      // 1. Upload image and get URL
       const imageUrl = await uploadImageAndGetURL(values.image);
-
-      // 2. Prepare product data for Firestore
       const productData = {
         name: values.name,
-        description: values.description,
         price: values.price,
         stockQuantity: values.stockQuantity,
         imageUrl: imageUrl,
@@ -212,24 +205,19 @@ export function ProductForm() {
         size: values.size,
       };
 
-      // 3. Add product data to Firestore
-      const productsCollection = collection(firestore, 'products');
-      await addDoc(productsCollection, productData);
+      await addDoc(collection(firestore, 'products'), productData);
 
-      // 4. Success feedback
       toast({
         title: 'Produto Adicionado!',
         description: `${values.name} foi adicionado com sucesso.`,
       });
 
-      // 5. Reset form and UI state
       form.reset();
       setCroppedImageUrl('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     } catch (error: any) {
-      // 6. Detailed error handling
       console.error('Erro detalhado ao adicionar produto:', error);
       toast({
         variant: 'destructive',
@@ -240,7 +228,6 @@ export function ProductForm() {
             : error.message || 'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
       });
     } finally {
-      // 7. ALWAYS turn off loading state
       setIsSubmitting(false);
     }
   }
@@ -257,19 +244,6 @@ export function ProductForm() {
                 <FormLabel>Nome do Produto</FormLabel>
                 <FormControl>
                   <Input placeholder="Pijama de Seda Lavanda" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrição do Produto</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Descreva o produto, material, caimento, etc." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -364,7 +338,7 @@ export function ProductForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione a subcategoria" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {categories[category as keyof typeof categories].subCategories.map(sub => (
