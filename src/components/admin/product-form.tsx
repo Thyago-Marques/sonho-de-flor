@@ -197,10 +197,8 @@ export function ProductForm() {
     }
 
     try {
-      // 1. Upload image and get URL
       const imageUrl = await uploadImageAndGetURL(values.image);
 
-      // 2. Add product data to Firestore
       await addDoc(collection(firestore, 'products'), {
         name: values.name,
         description: values.description,
@@ -212,13 +210,11 @@ export function ProductForm() {
         size: values.size,
       });
 
-      // 3. Success feedback
       toast({
         title: 'Produto Adicionado!',
         description: `${values.name} foi adicionado com sucesso.`,
       });
 
-      // 4. Reset form and state
       form.reset();
       setCroppedImageUrl('');
       if (fileInputRef.current) {
@@ -234,7 +230,6 @@ export function ProductForm() {
           'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
       });
     } finally {
-      // 5. Always stop submitting state
       setIsSubmitting(false);
     }
   }
