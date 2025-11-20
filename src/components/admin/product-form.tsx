@@ -35,7 +35,7 @@ import { addDocumentNonBlocking } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
-import 'react-image-crop/style.css';
+import 'react-image-crop/dist/ReactCrop.css';
 import Image from 'next/image';
 import { uploadImageAndGetURL } from '@/firebase/storage';
 import { Loader2 } from 'lucide-react';
@@ -331,7 +331,7 @@ export function ProductForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder={`Selecione ${category === 'infantil' ? 'a idade' : 'o tamanho'}`} />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {categories[category as keyof typeof categories].sizes.map(size => (
@@ -353,7 +353,7 @@ export function ProductForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione a subcategoria" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {categories[category as keyof typeof categories].subCategories.map(sub => (
