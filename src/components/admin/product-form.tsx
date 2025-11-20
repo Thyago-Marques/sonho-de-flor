@@ -35,8 +35,10 @@ import { addDocumentNonBlocking } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
+import 'react-image-crop/style.css';
 import Image from 'next/image';
+import { uploadImageAndGetURL } from '@/firebase/storage';
+import { Loader2 } from 'lucide-react';
 
 const productSchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
@@ -52,7 +54,7 @@ const productSchema = z.object({
   category: z.string({ required_error: 'Selecione uma categoria.' }),
   subCategory: z.string({ required_error: 'Selecione uma subcategoria.' }),
   size: z.string({ required_error: 'Selecione um tamanho/idade.' }),
-  image: z.any().refine((file) => file, 'A imagem é obrigatória.'),
+  image: z.instanceof(File, { message: 'A imagem é obrigatória e deve ser um arquivo.' }),
 });
 
 const categories = {
@@ -87,6 +89,12 @@ function getCroppedImg(
     return Promise.reject(new Error('Failed to get canvas context'));
   }
 
+  const pixelRatio = window.devicePixelRatio;
+  canvas.width = crop.width * pixelRatio;
+  canvas.height = crop.height * pixelRatio;
+  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  ctx.imageSmoothingQuality = 'high';
+
   ctx.drawImage(
     image,
     crop.x * scaleX,
@@ -105,9 +113,9 @@ function getCroppedImg(
         reject(new Error('Canvas is empty'));
         return;
       }
-      const file = new File([blob], fileName, { type: blob.type });
+      const file = new File([blob], fileName, { type: 'image/jpeg' });
       resolve(file);
-    }, 'image/jpeg');
+    }, 'image/jpeg', 0.95);
   });
 }
 
@@ -120,7 +128,9 @@ export function ProductForm() {
   const [completedCrop, setCompletedCrop] = useState<Crop>();
   const [croppedImageUrl, setCroppedImageUrl] = useState('');
   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -166,48 +176,62 @@ export function ProductForm() {
     if (!completedCrop || !imgRef.current) {
       return;
     }
-    const croppedFile = await getCroppedImg(imgRef.current, completedCrop, 'cropped-product-image.jpg');
+    const originalFile = fileInputRef.current?.files?.[0];
+    if (!originalFile) return;
+
+    const croppedFile = await getCroppedImg(imgRef.current, completedCrop, originalFile.name);
     form.setValue('image', croppedFile);
     setCroppedImageUrl(URL.createObjectURL(croppedFile));
     setIsCropModalOpen(false);
   }
 
-  function onSubmit(values: z.infer<typeof productSchema>) {
+  async function onSubmit(values: z.infer<typeof productSchema>) {
+    setIsSubmitting(true);
     if (!firestore) {
         toast({
             variant: "destructive",
             title: "Erro de conexão",
             description: "Não foi possível conectar ao banco de dados.",
         });
+        setIsSubmitting(false);
         return;
     }
-    // TODO: Implement image upload to Firebase Storage and get URL
-    const imageUrl = 'https://picsum.photos/seed/placeholder/400/500';
-    
-    const productsRef = collection(firestore, 'products');
-    addDocumentNonBlocking(productsRef, {
-        name: values.name,
-        description: values.description,
-        price: values.price,
-        stockQuantity: values.stockQuantity,
-        imageUrl: imageUrl, // Replace with uploaded image URL
-        categoryId: values.category,
-        subcategoryId: values.subCategory,
-        size: values.size, 
-    }).then(() => {
+
+    try {
+        const imageUrl = await uploadImageAndGetURL(values.image);
+        const productsRef = collection(firestore, 'products');
+
+        await addDocumentNonBlocking(productsRef, {
+            name: values.name,
+            description: values.description,
+            price: values.price,
+            stockQuantity: values.stockQuantity,
+            imageUrl: imageUrl, 
+            categoryId: values.category,
+            subcategoryId: values.subCategory,
+            size: values.size, 
+        });
+
         toast({
             title: 'Produto Adicionado!',
             description: `${values.name} foi adicionado com sucesso.`,
         });
         form.reset();
         setCroppedImageUrl('');
-    }).catch(() => {
-         toast({
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+
+    } catch (error) {
+        console.error("Error submitting product:", error);
+        toast({
             variant: "destructive",
             title: "Erro ao adicionar produto",
-            description: "Ocorreu um erro ao salvar o produto. Verifique suas permissões.",
+            description: "Ocorreu um erro ao salvar o produto. Verifique suas permissões ou o console para mais detalhes.",
         });
-    });
+    } finally {
+        setIsSubmitting(false);
+    }
   }
 
   return (
@@ -351,7 +375,7 @@ export function ProductForm() {
               <FormItem>
                 <FormLabel>Foto do Produto</FormLabel>
                 <FormControl>
-                  <Input type="file" accept="image/*" onChange={onSelectFile} />
+                  <Input type="file" accept="image/*" onChange={onSelectFile} ref={fileInputRef} />
                 </FormControl>
                 <FormDescription>
                   Envie uma imagem para o produto. Ela será recortada no formato 3:4.
@@ -370,7 +394,16 @@ export function ProductForm() {
             </div>
           )}
 
-          <Button type="submit" className="w-full">Adicionar Produto</Button>
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Adicionando...
+              </>
+            ) : (
+              'Adicionar Produto'
+            )}
+          </Button>
         </form>
       </Form>
 
