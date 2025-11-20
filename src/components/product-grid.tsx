@@ -1,33 +1,80 @@
-import { ProductCard } from "@/components/product-card";
-import type { Product } from "@/lib/types";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+'use client';
 
-const productPlaceholders = PlaceHolderImages.filter(img => img.id.startsWith('product-'));
-
-const products: Product[] = [
-    { id: '1', name: 'Pijama de Seda Lavanda', price: 'R$ 249,90', image: { src: productPlaceholders[0]?.imageUrl, alt: 'Pijama de seda na cor lavanda', hint: productPlaceholders[0]?.imageHint } },
-    { id: '2', name: 'Pijama de Algodão Verão', price: 'R$ 159,90', image: { src: productPlaceholders[1]?.imageUrl, alt: 'Pijama de algodão para o verão', hint: productPlaceholders[1]?.imageHint } },
-    { id: '3', name: 'Pijama Flanelado Inverno', price: 'R$ 289,90', image: { src: productPlaceholders[2]?.imageUrl, alt: 'Pijama de flanela para o inverno', hint: productPlaceholders[2]?.imageHint } },
-    { id: '4', name: 'Pijama Floral Elegance', price: 'R$ 199,90', image: { src: productPlaceholders[3]?.imageUrl, alt: 'Pijama com estampa floral', hint: productPlaceholders[3]?.imageHint } },
-    { id: '5', name: 'Pijama Infantil Ursinho', price: 'R$ 129,90', image: { src: productPlaceholders[4]?.imageUrl, alt: 'Pijama infantil com estampa de ursinho', hint: productPlaceholders[4]?.imageHint } },
-    { id: '6', name: 'Pijama Curto Conforto', price: 'R$ 149,90', image: { src: productPlaceholders[5]?.imageUrl, alt: 'Pijama curto para noites quentes', hint: productPlaceholders[5]?.imageHint } },
-].filter(p => p.image.src); // Filter out products without images
+import { ProductCard } from '@/components/product-card';
+import type { Product } from '@/lib/types';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function ProductGrid() {
-    if (products.length === 0) {
-        return null;
-    }
-    
+  const firestore = useFirestore();
+
+  const productsQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'products')) : null),
+    [firestore]
+  );
+
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useCollection<Product>(productsQuery);
+
+  if (isLoading) {
     return (
-        <section className="container mx-auto px-4 py-8">
+      <section className="container mx-auto px-4 py-8">
+        <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
+          Nossos Produtos
+        </h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex flex-col space-y-3">
+              <Skeleton className="h-[400px] w-full rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto px-4 py-8 text-center">
+        <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
+          Nossos Produtos
+        </h2>
+        <p className="text-red-500">
+          Ocorreu um erro ao carregar os produtos.
+        </p>
+      </section>
+    );
+  }
+
+  if (!products || products.length === 0) {
+    return (
+       <section className="container mx-auto px-4 py-8">
             <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
                 Nossos Produtos
             </h2>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                ))}
-            </div>
+            <p className="text-center text-muted-foreground">Nenhum produto encontrado.</p>
         </section>
     );
+  }
+
+  return (
+    <section className="container mx-auto px-4 py-8">
+      <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
+        Nossos Produtos
+      </h2>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  );
 }

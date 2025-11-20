@@ -9,6 +9,14 @@ type ProductCardProps = {
   product: Product;
 };
 
+// Function to format price to BRL currency
+const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(price);
+  };
+
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="w-full overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
@@ -16,12 +24,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <CardHeader className="p-0">
           <div className="aspect-[3/4] relative w-full">
               <Image
-                  src={product.image.src}
-                  alt={product.image.alt}
+                  src={product.imageUrl}
+                  alt={`Foto de ${product.name}`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  data-ai-hint={product.image.hint}
+                  data-ai-hint="pajama product"
               />
           </div>
         </CardHeader>
@@ -32,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
       </CardContent>
       <CardFooter className="flex justify-between items-center p-4 pt-0">
-        <p className="text-2xl font-bold text-primary">{product.price}</p>
+        <p className="text-2xl font-bold text-primary">{formatPrice(product.price)}</p>
         <Button>
           <ShoppingCart className="mr-2 h-4 w-4" />
           Comprar
