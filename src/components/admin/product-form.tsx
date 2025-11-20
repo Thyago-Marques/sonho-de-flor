@@ -197,41 +197,30 @@ export function ProductForm() {
         return;
     }
 
-    try {
-        const imageUrl = await uploadImageAndGetURL(values.image);
-        const productsRef = collection(firestore, 'products');
+    const imageUrl = await uploadImageAndGetURL(values.image);
+    const productsRef = collection(firestore, 'products');
 
-        addDocumentNonBlocking(productsRef, {
-            name: values.name,
-            description: values.description,
-            price: values.price,
-            stockQuantity: values.stockQuantity,
-            imageUrl: imageUrl, 
-            categoryId: values.category,
-            subcategoryId: values.subCategory,
-            size: values.size, 
-        });
+    addDocumentNonBlocking(productsRef, {
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        stockQuantity: values.stockQuantity,
+        imageUrl: imageUrl, 
+        categoryId: values.category,
+        subcategoryId: values.subCategory,
+        size: values.size, 
+    });
 
-        toast({
-            title: 'Produto Adicionado!',
-            description: `${values.name} foi adicionado com sucesso.`,
-        });
-        form.reset();
-        setCroppedImageUrl('');
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-
-    } catch (error) {
-        console.error("Error submitting product:", error);
-        toast({
-            variant: "destructive",
-            title: "Erro ao adicionar produto",
-            description: "Ocorreu um erro ao salvar o produto. Verifique suas permissões ou o console para mais detalhes.",
-        });
-    } finally {
-        setIsSubmitting(false);
+    toast({
+        title: 'Produto Adicionado!',
+        description: `${values.name} foi adicionado com sucesso.`,
+    });
+    form.reset();
+    setCroppedImageUrl('');
+    if (fileInputRef.current) {
+        fileInputRef.current.value = '';
     }
+    setIsSubmitting(false);
   }
 
   return (
