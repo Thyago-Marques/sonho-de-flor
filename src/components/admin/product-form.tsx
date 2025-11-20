@@ -321,7 +321,7 @@ export function ProductForm() {
 
           {category && (
               <>
-                  <FormField
+                <FormField
                   control={form.control}
                   name="size"
                   render={({ field }) => (
@@ -342,8 +342,8 @@ export function ProductForm() {
                       <FormMessage />
                       </FormItem>
                   )}
-                  />
-                  <FormField
+                />
+                <FormField
                   control={form.control}
                   name="subCategory"
                   render={({ field }) => (
@@ -364,7 +364,7 @@ export function ProductForm() {
                       <FormMessage />
                       </FormItem>
                   )}
-                  />
+                />
               </>
           )}
           
