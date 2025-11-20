@@ -201,7 +201,7 @@ export function ProductForm() {
         const imageUrl = await uploadImageAndGetURL(values.image);
         const productsRef = collection(firestore, 'products');
 
-        await addDocumentNonBlocking(productsRef, {
+        addDocumentNonBlocking(productsRef, {
             name: values.name,
             description: values.description,
             price: values.price,
@@ -320,52 +320,52 @@ export function ProductForm() {
           />
 
           {category && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="size"
-                  render={({ field }) => (
-                      <FormItem>
-                      <FormLabel>{category === 'infantil' ? 'Idade' : 'Tamanho'}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                          <SelectTrigger>
-                              <SelectValue placeholder={`Selecione ${category === 'infantil' ? 'a idade' : 'o tamanho'}`} />
-                          </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                          {categories[category as keyof typeof categories].sizes.map(size => (
-                              <SelectItem key={size} value={size}>{size === 'tamanho-unico' ? 'Tamanho Único' : size.toUpperCase()}</SelectItem>
-                          ))}
-                          </SelectContent>
-                      </Select>
-                      <FormMessage />
-                      </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="subCategory"
-                  render={({ field }) => (
-                      <FormItem>
-                      <FormLabel>Subcategoria</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                          <SelectTrigger>
-                              <SelectValue placeholder="Selecione a subcategoria" />
-                          </Trigger>
-                          </FormControl>
-                          <SelectContent>
-                          {categories[category as keyof typeof categories].subCategories.map(sub => (
-                              <SelectItem key={sub} value={sub}>{sub.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</SelectItem>
-                          ))}
-                          </SelectContent>
-                      </Select>
-                      <FormMessage />
-                      </FormItem>
-                  )}
-                />
-              </>
+            <>
+              <FormField
+                control={form.control}
+                name="size"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{category === 'infantil' ? 'Idade' : 'Tamanho'}</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={`Selecione ${category === 'infantil' ? 'a idade' : 'o tamanho'}`} />
+                        </Trigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories[category as keyof typeof categories].sizes.map(size => (
+                          <SelectItem key={size} value={size}>{size === 'tamanho-unico' ? 'Tamanho Único' : size.toUpperCase()}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="subCategory"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subcategoria</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a subcategoria" />
+                        </Trigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories[category as keyof typeof categories].subCategories.map(sub => (
+                          <SelectItem key={sub} value={sub}>{sub.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
           
           <FormField
