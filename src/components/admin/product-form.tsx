@@ -187,48 +187,56 @@ export function ProductForm() {
   async function onSubmit(values: z.infer<typeof productSchema>) {
     setIsSubmitting(true);
     if (!firestore) {
-        toast({
-            variant: "destructive",
-            title: "Erro de conexão",
-            description: "Não foi possível conectar ao banco de dados.",
-        });
-        setIsSubmitting(false);
-        return;
+      toast({
+        variant: 'destructive',
+        title: 'Erro de Conexão',
+        description: 'Não foi possível conectar ao banco de dados.',
+      });
+      setIsSubmitting(false);
+      return;
     }
 
     try {
-        const imageUrl = await uploadImageAndGetURL(values.image);
-        const productsRef = collection(firestore, 'products');
+      // 1. Upload image and get URL
+      const imageUrl = await uploadImageAndGetURL(values.image);
 
-        await addDoc(productsRef, {
-            name: values.name,
-            description: values.description,
-            price: values.price,
-            stockQuantity: values.stockQuantity,
-            imageUrl: imageUrl, 
-            categoryId: values.category,
-            subcategoryId: values.subCategory,
-            size: values.size, 
-        });
+      // 2. Add product data to Firestore
+      const productsRef = collection(firestore, 'products');
+      await addDoc(productsRef, {
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        stockQuantity: values.stockQuantity,
+        imageUrl: imageUrl,
+        categoryId: values.category,
+        subcategoryId: values.subCategory,
+        size: values.size,
+      });
 
-        toast({
-            title: 'Produto Adicionado!',
-            description: `${values.name} foi adicionado com sucesso.`,
-        });
-        form.reset();
-        setCroppedImageUrl('');
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    } catch (error) {
-        console.error("Erro ao adicionar produto:", error);
-        toast({
-            variant: "destructive",
-            title: "Erro ao adicionar produto",
-            description: "Ocorreu um erro ao salvar o produto. Verifique o console para mais detalhes.",
-        });
+      // 3. Success feedback
+      toast({
+        title: 'Produto Adicionado!',
+        description: `${values.name} foi adicionado com sucesso.`,
+      });
+
+      // 4. Reset form and state
+      form.reset();
+      setCroppedImageUrl('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error: any) {
+      console.error('Erro ao adicionar produto:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao Adicionar Produto',
+        description:
+          error.message ||
+          'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
+      });
     } finally {
-        setIsSubmitting(false);
+      // 5. Always stop submitting state
+      setIsSubmitting(false);
     }
   }
 
