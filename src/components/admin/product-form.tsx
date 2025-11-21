@@ -190,9 +190,9 @@ export function ProductForm() {
       });
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
       // 1. Upload image and get URL
       const imageUrl = await uploadImageAndGetURL(values.image);
@@ -207,23 +207,23 @@ export function ProductForm() {
         subcategoryId: values.subCategory,
         size: values.size,
       };
-
+  
       // 3. Add product to Firestore
       await addDoc(collection(firestore, 'products'), productData);
-
+  
       // 4. Success feedback
       toast({
         title: 'Produto Adicionado!',
         description: `${values.name} foi adicionado com sucesso.`,
       });
-
+  
       // 5. Reset form
       form.reset();
       setCroppedImageUrl('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-
+  
     } catch (error: any) {
       // 6. Error handling
       console.error('Erro detalhado ao adicionar produto:', error);
@@ -232,7 +232,7 @@ export function ProductForm() {
         title: 'Erro ao Adicionar Produto',
         description:
           error.code === 'permission-denied'
-            ? 'Você não tem permissão para adicionar produtos. Verifique suas credenciais de administrador.'
+            ? 'Você não tem permissão para adicionar produtos. Verifique suas credenciais de administrador e as regras de segurança do Firestore.'
             : error.message || 'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
       });
     } finally {
