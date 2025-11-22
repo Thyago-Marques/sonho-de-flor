@@ -9,6 +9,7 @@ import {
   Mail,
   Menu,
   ShoppingCart,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -198,9 +199,14 @@ export function Header() {
           </DropdownMenu>
         </nav>
 
-        <div className="flex flex-1 items-center justify-end space-x-4">
+        <div className="flex flex-1 items-center justify-end space-x-2">
           <Button variant="ghost" size="icon" aria-label="Carrinho de compras">
             <ShoppingCart className="h-6 w-6" />
+          </Button>
+          <Button asChild variant="ghost" size="icon" aria-label="Login do Administrador">
+            <Link href="/admin/login">
+                <User className="h-6 w-6" />
+            </Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
@@ -228,6 +234,10 @@ export function Header() {
                 </Link>
                 <Link href="/category/masculino" className="transition-colors hover:text-primary">
                     💤 Masculino
+                </Link>
+                <Link href="/admin/login" className="flex items-center gap-2 transition-colors hover:text-primary">
+                    <User className="h-5 w-5" />
+                    Acesso Restrito
                 </Link>
               </nav>
             </SheetContent>
