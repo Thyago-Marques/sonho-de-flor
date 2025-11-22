@@ -44,6 +44,11 @@ export function Footer() {
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
           <p>&copy; {year} Sonho de Flor. Todos os direitos reservados.</p>
+          <p className="mt-2">
+            <Link href="/admin/login" className="transition-colors hover:text-primary">
+              Acesso Restrito
+            </Link>
+          </p>
         </div>
       </div>
     </footer>
