@@ -1,12 +1,10 @@
+// src/components/layout/header.tsx
+
 "use client";
 
 import Link from "next/link";
 import {
   Flower2,
-  Instagram,
-  Facebook,
-  Phone,
-  Mail,
   Menu,
   ShoppingCart,
   User,
@@ -24,35 +22,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+// Importes de ícones sociais removidos para simplificação
 
-const socialLinks = [
-  {
-    href: "mailto:contato@sonhodeflor.com",
-    label: "Email",
-    icon: <Mail className="h-4 w-4" />,
-  },
-  {
-    href: "https://wa.me/5511999999999",
-    label: "WhatsApp",
-    icon: <WhatsAppIcon className="h-4 w-4" />,
-  },
-  {
-    href: "tel:+5511999999999",
-    label: "Telefone",
-    icon: <Phone className="h-4 w-4" />,
-  },
-  {
-    href: "https://facebook.com",
-    label: "Facebook",
-    icon: <Facebook className="h-4 w-4" />,
-  },
-  {
-    href: "https://instagram.com",
-    label: "Instagram",
-    icon: <Instagram className="h-4 w-4" />,
-  },
-];
+// Links sociais removidos
 
 const navLinks: { href: string, label: string }[] = [];
 
@@ -83,30 +55,16 @@ const masculinoSizes = [
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="bg-primary/10">
-        <div className="container mx-auto flex h-10 items-center justify-center space-x-4 px-4 text-sm font-medium text-primary md:justify-end">
-          {socialLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              className="transition-colors hover:text-primary/80"
-            >
-              {link.icon}
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="container mx-auto flex h-16 items-center px-4">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
+      {/* A barra de links sociais superior foi removida para um design mais limpo e minimalista. */}
+      <div className="container mx-auto flex h-20 items-center px-4"> {/* Altura ajustada para h-20 */}
+        <Link href="/" className="mr-8 flex items-center space-x-2"> {/* Margem ajustada */}
           <Flower2 className="h-8 w-8 text-primary" />
           <span className="font-headline text-2xl font-bold text-primary">
             Sonho de Flor
           </span>
         </Link>
 
+        {/* Navegação principal - visível em telas maiores */}
         <nav className="hidden items-center space-x-2 md:flex">
           {navLinks.map((link) => (
              <Button asChild key={link.label} variant="ghost">
@@ -117,8 +75,8 @@ export function Header() {
           ))}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                🌸 Feminino
+              <Button variant="ghost" className="text-base font-semibold hover:bg-primary/10">
+                Feminino
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -126,7 +84,7 @@ export function Header() {
                     {femininoSizes.map((size) => (
                     <DropdownMenuSub key={size.name}>
                         <DropdownMenuSubTrigger>
-                        <span>{size.name}</span>
+                        <span>{size.name === 'tamanho-unico' ? 'Tamanho Único' : size.toUpperCase()}</span>
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                         <DropdownMenuSubContent>
@@ -144,8 +102,8 @@ export function Header() {
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                🧸 Infantil
+              <Button variant="ghost" className="text-base font-semibold hover:bg-primary/10">
+                Infantil
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -172,8 +130,8 @@ export function Header() {
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                💤 Masculino
+              <Button variant="ghost" className="text-base font-semibold hover:bg-primary/10">
+                Masculino
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -187,7 +145,7 @@ export function Header() {
                                 <DropdownMenuSubContent>
                                     {masculinoSizes.map((size) => (
                                         <DropdownMenuItem key={size.name} asChild>
-                                            <Link href={`/category/masculino/${subCategory.href}/${size.href}`}>{size.name}</Link>
+                                            <Link href={`/category/masculino/${subCategory.href}/${size.href}`}>{size.name === 'tamanho-unico' ? 'Tamanho Único' : size.toUpperCase()}</Link>
                                         </DropdownMenuItem>
                                     ))}
                                 </DropdownMenuSubContent>
@@ -199,7 +157,8 @@ export function Header() {
           </DropdownMenu>
         </nav>
 
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        {/* Ícones de Ação - alinhados à direita */}
+        <div className="ml-auto flex items-center space-x-2"> {/* Usar ml-auto para empurrar para a direita */}
           <Button variant="ghost" size="icon" aria-label="Carrinho de compras">
             <ShoppingCart className="h-6 w-6" />
           </Button>
@@ -208,6 +167,8 @@ export function Header() {
                 <User className="h-6 w-6" />
             </Link>
           </Button>
+          
+          {/* Menu Mobile */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -227,13 +188,13 @@ export function Header() {
                     </Link>
                 ))}
                 <Link href="/category/feminino" className="transition-colors hover:text-primary">
-                    🌸 Feminino
+                    Feminino
                 </Link>
                  <Link href="/category/infantil" className="transition-colors hover:text-primary">
-                    🧸 Infantil
+                    Infantil
                 </Link>
                 <Link href="/category/masculino" className="transition-colors hover:text-primary">
-                    💤 Masculino
+                    Masculino
                 </Link>
                 <Link href="/admin/login" className="flex items-center gap-2 transition-colors hover:text-primary">
                     <User className="h-5 w-5" />
