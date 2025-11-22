@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
-import { Flower2, Instagram, Facebook, Phone, Mail } from "lucide-react";
+import { Flower2, Instagram, Facebook, Phone, Mail, User } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 
 export function Footer() {
@@ -39,16 +39,12 @@ export function Footer() {
               <Link href="tel:+5511999999999" aria-label="Telefone" className="text-muted-foreground transition-colors hover:text-primary"><Phone/></Link>
               <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground transition-colors hover:text-primary"><Facebook/></Link>
               <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground transition-colors hover:text-primary"><Instagram/></Link>
+              <Link href="/admin/login" aria-label="Login do Administrador" className="text-muted-foreground transition-colors hover:text-primary"><User /></Link>
             </div>
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
           <p>&copy; {year} Sonho de Flor. Todos os direitos reservados.</p>
-          <p className="mt-2">
-            <Link href="/admin/login" className="transition-colors hover:text-primary">
-              Acesso Restrito
-            </Link>
-          </p>
         </div>
       </div>
     </footer>
