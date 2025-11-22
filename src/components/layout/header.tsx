@@ -1,5 +1,3 @@
-// src/components/layout/header.tsx
-
 "use client";
 
 import Link from "next/link";
@@ -22,9 +20,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// Importes de ícones sociais removidos para simplificação
-
-// Links sociais removidos
 
 const navLinks: { href: string, label: string }[] = [];
 
@@ -55,9 +50,8 @@ const masculinoSizes = [
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {/* A barra de links sociais superior foi removida para um design mais limpo e minimalista. */}
-      <div className="container mx-auto flex h-20 items-center px-4"> {/* Altura ajustada para h-20 */}
-        <Link href="/" className="mr-8 flex items-center space-x-2"> {/* Margem ajustada */}
+      <div className="container mx-auto flex h-20 items-center px-4">
+        <Link href="/" className="mr-8 flex items-center space-x-2">
           <Flower2 className="h-8 w-8 text-primary" />
           <span className="font-headline text-2xl font-bold text-primary">
             Sonho de Flor
@@ -84,7 +78,8 @@ export function Header() {
                     {femininoSizes.map((size) => (
                     <DropdownMenuSub key={size.name}>
                         <DropdownMenuSubTrigger>
-                        <span>{size.name === 'tamanho-unico' ? 'Tamanho Único' : size.toUpperCase()}</span>
+                        {/* FIXED: Accessed size.name before calling toUpperCase */}
+                        <span>{size.name === 'tamanho-unico' ? 'Tamanho Único' : size.name.toUpperCase()}</span>
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                         <DropdownMenuSubContent>
@@ -145,7 +140,7 @@ export function Header() {
                                 <DropdownMenuSubContent>
                                     {masculinoSizes.map((size) => (
                                         <DropdownMenuItem key={size.name} asChild>
-                                            <Link href={`/category/masculino/${subCategory.href}/${size.href}`}>{size.name === 'tamanho-unico' ? 'Tamanho Único' : size.toUpperCase()}</Link>
+                                            <Link href={`/category/masculino/${subCategory.href}/${size.href}`}>{size.name === 'tamanho-unico' ? 'Tamanho Único' : size.name.toUpperCase()}</Link>
                                         </DropdownMenuItem>
                                     ))}
                                 </DropdownMenuSubContent>
@@ -157,8 +152,7 @@ export function Header() {
           </DropdownMenu>
         </nav>
 
-        {/* Ícones de Ação - alinhados à direita */}
-        <div className="ml-auto flex items-center space-x-2"> {/* Usar ml-auto para empurrar para a direita */}
+        <div className="ml-auto flex items-center space-x-2">
           <Button variant="ghost" size="icon" aria-label="Carrinho de compras">
             <ShoppingCart className="h-6 w-6" />
           </Button>
@@ -168,7 +162,6 @@ export function Header() {
             </Link>
           </Button>
           
-          {/* Menu Mobile */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
