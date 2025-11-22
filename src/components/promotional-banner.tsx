@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 
 const bannerImages = PlaceHolderImages.filter(img => img.id.startsWith('banner-'));
 const bannerContent = [
-    { title: "Promoção de Lançamento", description: "Até 30% OFF em toda a loja!", buttonText: "Conferir", href: "#"},
+    { title: "Promoção de Lançamento", description: "Até 40% OFF em toda a loja!", buttonText: "Conferir", href: "#"},
     { title: "Coleção Sonhos de Lavanda", description: "Conforto e elegância para suas noites.", buttonText: "Descobrir", href: "#"},
     { title: "Durma nas Nuvens", description: "Os pijamas mais macios que você já vestiu.", buttonText: "Ver Coleção", href: "#"},
 ]
